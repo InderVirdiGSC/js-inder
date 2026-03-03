@@ -1,0 +1,2 @@
+# js-inder
+Practice JavaScript
