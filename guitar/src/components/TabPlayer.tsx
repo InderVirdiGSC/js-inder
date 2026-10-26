@@ -31,7 +31,11 @@ function PickAnim({ ev, idx }: { ev: TabEvent | undefined; idx: number }) {
       <line x1="4" x2="86" y1="45" y2="45" className="pa-string" />
       {pick === 'D' || pick === 'U' ? (
         <g key={idx} className={pick === 'D' ? 'pa-down' : 'pa-up'}>
-          <path d="M45 30 c-12 0 -16 -8 -16 -14 c0 -8 8 -10 16 -10 c8 0 16 2 16 10 c0 6 -4 14 -16 14z" className="pa-pick" transform="translate(0 6)" />
+          <path
+            d="M0 -16 C10 -16 14 -10 13 -4 C11 4 4 13 0 16 C-4 13 -11 4 -13 -4 C-14 -10 -10 -16 0 -16 Z"
+            className="pa-pick"
+            transform="translate(45 24)"
+          />
         </g>
       ) : pick === 'F' ? (
         <g key={idx} className="pa-finger">
@@ -61,13 +65,13 @@ function PickAnim({ ev, idx }: { ev: TabEvent | undefined; idx: number }) {
   )
 }
 
-export function CoachPanel({ ev, idx, playing }: { ev: TabEvent | undefined; idx: number; playing: boolean }) {
+export function CoachPanel({ ev, idx, playing, countdown }: { ev: TabEvent | undefined; idx: number; playing: boolean; countdown: number }) {
   if (!ev || ev.rest)
     return (
       <div className="coach">
         <PickAnim ev={undefined} idx={idx} />
         <div className="coach-body">
-          <div className="coach-title">{playing ? 'Rest' : 'Press play'}</div>
+          <div className="coach-title">{countdown > 0 ? `Get ready… ${countdown}` : playing ? 'Rest' : 'Press play'}</div>
           <div className="legend">
             {(['1', '2', '3', '4', 'R'] as const).map((g) => (
               <span key={g}>
@@ -164,7 +168,7 @@ export function TabPlayer({ events, startBpm, goalBpm, drive, settings, onSettin
         <Fretboard start={start0} end={end0} dots={dots} />
         {countdown > 0 && <div className="countdown">{countdown}</div>}
       </div>
-      <CoachPanel ev={current} idx={active} playing={playing} />
+      <CoachPanel ev={current} idx={active} playing={playing} countdown={countdown} />
       <TabView events={events} active={active} />
       <div className="controls">
         <button className={`play ${playing ? 'on' : ''}`} onClick={playing ? stop : start} aria-label={playing ? 'Stop' : 'Play'}>

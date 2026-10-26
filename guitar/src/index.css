@@ -563,7 +563,7 @@ select {
   font-size: 0.92rem;
 }
 .dg-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
 }
 .dg-mark {
@@ -577,7 +577,7 @@ select {
   fill: var(--bad);
 }
 .dg-stroke {
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 800;
 }
 .dg-string {
@@ -644,6 +644,7 @@ select {
 }
 .fb-wrap {
   position: relative;
+  overflow-x: auto;
 }
 .fretboard {
   width: 100%;
@@ -655,7 +656,7 @@ select {
   overflow-x: auto;
 }
 .fb-wide {
-  min-width: 640px;
+  min-width: 760px;
 }
 .fb-wood {
   fill: #2b1f17;
@@ -678,7 +679,7 @@ select {
 .fb-label,
 .fb-fretnum {
   fill: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
 }
 .fb-dot-label {
@@ -695,7 +696,7 @@ select {
   transform-origin: center;
 }
 .fb-bend-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
 }
 @keyframes pop {
@@ -776,19 +777,22 @@ select {
 }
 @keyframes pick-down {
   from {
-    transform: translateY(-14px);
+    transform: translateY(0);
   }
   to {
-    transform: translateY(28px);
+    transform: translateY(26px);
   }
 }
 @keyframes pick-up {
   from {
-    transform: translateY(28px);
+    transform: translateY(26px);
   }
   to {
-    transform: translateY(-14px);
+    transform: translateY(0);
   }
+}
+.fretboard {
+  margin: 0 auto;
 }
 @keyframes finger-pluck {
   from {

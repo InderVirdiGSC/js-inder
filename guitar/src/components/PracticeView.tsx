@@ -1,10 +1,33 @@
 import { useMemo } from 'react'
 import { LEVELS } from '../data/curriculum'
-import { BLOCK_LABEL, buildSession } from '../practice'
+import { OPEN_MIDI, type StringNo } from '../music/notation'
+import { BLOCK_LABEL, buildSession, noteName } from '../practice'
 import type { PracticeSession } from '../usePracticeSession'
 import { dayKey, streak, type Store } from '../store'
 import { DroneButton } from './DroneButton'
+import { fingerColor } from './fingers'
+import { Fretboard, type Dot } from './Fretboard'
 import { ExerciseCard } from './LessonView'
+
+function PentatonicBox({ root }: { root: number }) {
+  const rootFret = (((root - OPEN_MIDI[6]) % 12) + 12) % 12
+  const dots: Dot[] = []
+  for (let s = 1; s <= 6; s++)
+    for (let f = rootFret; f <= rootFret + 3; f++) {
+      const iv = (((OPEN_MIDI[s as StringNo] + f - root) % 12) + 12) % 12
+      if (![0, 3, 5, 7, 10].includes(iv)) continue
+      const g = f === 0 ? 0 : rootFret === 0 ? f : f - rootFret + 1
+      dots.push({ key: `${s}-${f}`, s, f, label: g === 0 ? 'O' : String(g), color: fingerColor(String(g)), state: iv === 0 ? 'root' : 'normal' })
+    }
+  return (
+    <div>
+      <p className="muted small">
+        {noteName(root)} minor pentatonic, box 1 — numbers are fretting fingers, white rings are roots.
+      </p>
+      <Fretboard start={Math.max(0, rootFret - 1)} end={Math.max(0, rootFret - 1) + 5} dots={dots} />
+    </div>
+  )
+}
 
 function fmt(secs: number) {
   const m = Math.floor(secs / 60)
@@ -110,6 +133,7 @@ export function PracticeView({ store, practice, onOpenLesson }: { store: Store; 
         {block.kind === 'improv' && (
           <div className="card">
             <p>{block.prompt}</p>
+            <PentatonicBox root={block.droneRoot ?? 45} />
             <div className="row">
               <DroneButton root={block.droneRoot ?? 45} drive={state.settings.drive} />
             </div>

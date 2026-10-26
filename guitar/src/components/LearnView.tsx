@@ -1,11 +1,19 @@
-import { useState } from 'react'
 import { CATEGORY_LABEL, LESSONS, LEVELS, type Category, type LevelId } from '../data/curriculum'
 import type { Store } from '../store'
 
 const ORDER: Category[] = ['picking', 'fretting', 'lead', 'riff']
 
-export function LearnView({ store, onOpen }: { store: Store; onOpen: (lessonId: string) => void }) {
-  const [levelId, setLevelId] = useState<LevelId>(store.state.level)
+export function LearnView({
+  store,
+  levelId,
+  setLevelId,
+  onOpen,
+}: {
+  store: Store
+  levelId: LevelId
+  setLevelId: (id: LevelId) => void
+  onOpen: (lessonId: string) => void
+}) {
   const level = LEVELS.find((l) => l.id === levelId)!
   const lessons = LESSONS.filter((l) => l.level === levelId)
   const done = lessons.filter((l) => store.state.completed.includes(l.id)).length

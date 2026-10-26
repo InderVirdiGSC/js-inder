@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { LESSONS, LEVELS } from './data/curriculum'
+import { LESSONS, LEVELS, type LevelId } from './data/curriculum'
 import { LearnView } from './components/LearnView'
 import { LessonView } from './components/LessonView'
 import { PracticeView } from './components/PracticeView'
@@ -22,6 +22,7 @@ export default function App() {
   const practice = usePracticeSession(store)
   const [tab, setTab] = useState<Tab>('practice')
   const [lessonId, setLessonId] = useState<string | null>(null)
+  const [learnLevel, setLearnLevel] = useState<LevelId>(store.state.level)
   const lesson = lessonId ? LESSONS.find((l) => l.id === lessonId) : undefined
   const level = LEVELS.find((l) => l.id === store.state.level)!
 
@@ -30,6 +31,8 @@ export default function App() {
   }, [tab, lessonId])
 
   const openLesson = (id: string) => {
+    const target = LESSONS.find((l) => l.id === id)
+    if (target) setLearnLevel(target.level)
     setLessonId(id)
     setTab('learn')
   }
@@ -45,7 +48,7 @@ export default function App() {
 
       {tab === 'practice' && <PracticeView store={store} practice={practice} onOpenLesson={openLesson} />}
       {tab === 'learn' &&
-        (lesson ? <LessonView lesson={lesson} store={store} onBack={() => setLessonId(null)} /> : <LearnView store={store} onOpen={setLessonId} />)}
+        (lesson ? <LessonView lesson={lesson} store={store} onBack={() => setLessonId(null)} /> : <LearnView store={store} levelId={learnLevel} setLevelId={setLearnLevel} onOpen={setLessonId} />)}
       {tab === 'tools' && <ToolsView store={store} />}
       {tab === 'progress' && <ProgressView store={store} />}
 

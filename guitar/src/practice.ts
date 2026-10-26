@@ -76,7 +76,7 @@ export function buildSession(state: AppState, day: string, totalMinutes: number)
       const root = lesson?.droneRoot ?? 45
       blocks.push({
         kind,
-        title: `Improvise over a ${noteName(root)} drone`,
+        title: `Improvise over ${/^[AEF]/.test(noteName(root)) ? 'an' : 'a'} ${noteName(root)} drone`,
         minutes,
         lesson,
         droneRoot: root,

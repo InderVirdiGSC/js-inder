@@ -65,17 +65,17 @@ function PickGrip() {
       ))}
       <ellipse cx="78" cy="70" rx="62" ry="46" fill={SKIN} stroke={SKIN_DARK} strokeWidth="2" />
       <Tube d="M112 52 C168 46 196 84 176 118 C166 134 146 134 142 120" w={26} />
-      <Pick x={166} y={126} rotate={0} />
+      <Pick x={166} y={130} rotate={0} />
       <Tube d="M70 100 C102 96 132 98 160 104" w={24} />
       <ellipse cx="160" cy="104" rx="8" ry="9" fill={NAIL} stroke={SKIN_DARK} strokeWidth="1" />
-      <Leader x1={226} y1={44} x2={182} y2={82} />
-      <Label x={228} y={40}>Index curled,</Label>
-      <Label x={228} y={52}>use side of 1st joint</Label>
+      <Leader x1={214} y1={44} x2={182} y2={82} />
+      <Label x={216} y={40}>Index curled,</Label>
+      <Label x={216} y={52}>side of 1st joint</Label>
       <Leader x1={60} y1={140} x2={120} y2={102} />
       <Label x={10} y={152}>Thumb pad flat</Label>
-      <Leader x1={226} y1={138} x2={170} y2={140} />
-      <Label x={228} y={134}>2–3 mm tip</Label>
-      <Label x={228} y={146}>just reaches string</Label>
+      <Leader x1={214} y1={138} x2={170} y2={144} />
+      <Label x={216} y={134}>2–3 mm tip</Label>
+      <Label x={216} y={146}>just reaches string</Label>
     </Figure>
   )
 }
@@ -142,7 +142,7 @@ function Motion({ title, caption, strings, path, labels }: MotionProps) {
       ))}
       <path d={d} className="dg-trace" />
       <g>
-        <Pick x={0} y={-10} rotate={180} scale={0.75} />
+        <Pick x={0} y={-10} rotate={0} scale={0.75} />
         <animateMotion dur={dur} repeatCount="indefinite" path={d} />
       </g>
       {labels.map((l, i) => (
@@ -212,7 +212,7 @@ function Hybrid() {
         </g>
       ))}
       <g>
-        <Pick x={110} y={30} rotate={180} scale={0.8} />
+        <Pick x={110} y={30} rotate={0} scale={0.8} />
         <animateTransform attributeName="transform" type="translate" values="0 0; 0 30; 0 30; 0 0; 0 0" keyTimes="0; 0.2; 0.5; 0.7; 1" dur="1.4s" repeatCount="indefinite" />
       </g>
       <g>
