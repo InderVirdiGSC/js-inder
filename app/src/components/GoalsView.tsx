@@ -1,15 +1,74 @@
 import { useRef, useState } from 'react'
+import { DEFAULT_MODEL, type AiSettings } from '../ai'
 import type { AppState, Goals } from '../types'
 
 interface Props {
   state: AppState
+  ai: AiSettings
   onSaveGoals: (g: Goals) => void
+  onSaveAi: (s: AiSettings) => void
   onImport: (s: AppState) => void
   onReset: () => void
   logLink: (itemId: string) => string
 }
 
-export function GoalsView({ state, onSaveGoals, onImport, onReset, logLink }: Props) {
+function AiSection({ ai, onSave }: { ai: AiSettings; onSave: (s: AiSettings) => void }) {
+  const [key, setKey] = useState(ai.apiKey)
+  const [model, setModel] = useState(ai.model)
+  const [saved, setSaved] = useState(false)
+  const dirty = key.trim() !== ai.apiKey || (model.trim() || DEFAULT_MODEL) !== ai.model
+
+  return (
+    <>
+      <h3 className="section-title" id="ai-settings">
+        AI search
+      </h3>
+      <label className="field">
+        <span>OpenAI API key</span>
+        <input
+          type="password"
+          autoComplete="off"
+          placeholder="sk-..."
+          value={key}
+          onChange={(e) => setKey(e.target.value)}
+        />
+      </label>
+      <label className="field">
+        <span>Model</span>
+        <input value={model} placeholder={DEFAULT_MODEL} onChange={(e) => setModel(e.target.value)} />
+      </label>
+      <p className="muted small">
+        The key is saved only on this device and sent only to OpenAI. It is not included in backups.
+      </p>
+      <div className="row">
+        <button
+          className="btn btn-primary"
+          disabled={!dirty}
+          onClick={() => {
+            onSave({ apiKey: key, model })
+            setSaved(true)
+            setTimeout(() => setSaved(false), 1500)
+          }}
+        >
+          {saved ? 'Saved' : 'Save AI settings'}
+        </button>
+        {ai.apiKey && (
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              setKey('')
+              onSave({ apiKey: '', model })
+            }}
+          >
+            Remove key
+          </button>
+        )}
+      </div>
+    </>
+  )
+}
+
+export function GoalsView({ state, ai, onSaveGoals, onSaveAi, onImport, onReset, logLink }: Props) {
   const [protein, setProtein] = useState(String(state.goals.proteinTarget))
   const [kcal, setKcal] = useState(String(state.goals.kcalLimit))
   const [saved, setSaved] = useState(false)
@@ -62,6 +121,8 @@ export function GoalsView({ state, onSaveGoals, onImport, onReset, logLink }: Pr
       >
         {saved ? 'Saved' : 'Save goals'}
       </button>
+
+      <AiSection ai={ai} onSave={onSaveAi} />
 
       <h3 className="section-title">NFC tags (optional)</h3>
       <div className="card">

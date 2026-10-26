@@ -747,3 +747,150 @@ code {
   margin: 0;
   padding-left: 20px;
 }
+
+/* Ask */
+.ask {
+  padding-bottom: 150px;
+}
+.ask-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chip.example {
+  align-items: flex-start;
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 500;
+}
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.msg {
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  line-height: 1.45;
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  white-space: pre-wrap;
+}
+.msg-user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+.msg-assistant {
+  align-self: flex-start;
+  background: var(--surface);
+  border-bottom-left-radius: 4px;
+}
+.msg-error {
+  border: 1px solid var(--bad);
+  color: var(--bad);
+}
+.msg img {
+  max-width: 180px;
+  border-radius: 10px;
+}
+.typing {
+  color: var(--muted);
+}
+.food-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  white-space: normal;
+}
+.food-name {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.btn-small {
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  background: var(--bg);
+}
+.clear-chat {
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 6px 10px;
+}
+.composer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(62px + var(--safe-bottom));
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 9;
+}
+.composer-row {
+  display: flex;
+  gap: 8px;
+}
+.composer-input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 16px;
+}
+.composer-photo {
+  padding: 0 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.composer-send {
+  padding: 0 16px;
+}
+.composer-image {
+  position: relative;
+  align-self: flex-start;
+}
+.composer-image img {
+  height: 64px;
+  border-radius: 8px;
+}
+.composer-image button {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  line-height: 1;
+}
