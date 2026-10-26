@@ -1,9 +1,9 @@
-name: Deploy Plan Tracker
+name: Deploy Plan Tracker & Guitar Coach
 
 on:
   push:
     branches: [main]
-    paths: ['app/**', '.github/workflows/deploy-app.yml']
+    paths: ['app/**', 'guitar/**', '.github/workflows/deploy-app.yml']
   workflow_dispatch:
 
 permissions:
@@ -18,18 +18,20 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: app/package-lock.json
-      - run: npm ci
-      - run: npm run build
+          cache-dependency-path: |
+            app/package-lock.json
+            guitar/package-lock.json
+      - run: npm ci && npm run build
+        working-directory: app
+      - run: npm ci && npm run build
+        working-directory: guitar
+      - run: cp -r guitar/dist app/dist/guitar
       - uses: actions/upload-pages-artifact@v3
         with:
           path: app/dist
