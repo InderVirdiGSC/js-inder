@@ -1,18 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { askNutrition, useAiSettings, type ChatMessage, type FoodSuggestion } from './ai'
+import { AskView } from './components/AskView'
 import { GoalsView } from './components/GoalsView'
 import { HistoryView } from './components/HistoryView'
-import { ItemsView } from './components/ItemsView'
+import { ItemEditor, ItemsView } from './components/ItemsView'
 import { QuantitySheet } from './components/QuantitySheet'
 import { TodayView } from './components/TodayView'
-import { dayKey, fmtQty, summarize } from './nutrition'
+import { dayKey, fmtQty, macrosFor, round1, summarize } from './nutrition'
 import { SEED_STATE } from './seed'
-import { useAppState } from './store'
+import { newId, useAppState } from './store'
 import type { Item, LogEntry } from './types'
 
-type Tab = 'today' | 'history' | 'items' | 'goals'
+type Tab = 'today' | 'ask' | 'history' | 'items' | 'goals'
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'today', label: 'Today' },
+  { id: 'ask', label: 'Ask' },
   { id: 'history', label: 'History' },
   { id: 'items', label: 'Items' },
   { id: 'goals', label: 'Goals' },
@@ -33,6 +36,10 @@ export default function App() {
   const [toast, setToast] = useState<Toast | null>(null)
   const toastTimer = useRef<number | null>(null)
   const [today, setToday] = useState(dayKey())
+  const [ai, setAi] = useAiSettings()
+  const [chat, setChat] = useState<ChatMessage[]>([])
+  const [asking, setAsking] = useState(false)
+  const [newFood, setNewFood] = useState<Item | null>(null)
 
   useEffect(() => {
     const refresh = () => setToday(dayKey())
@@ -95,6 +102,52 @@ export default function App() {
     [],
   )
 
+  const aiContext = () => {
+    const items = state.items
+      .map((i) => {
+        const m = macrosFor(i, i.defaultQty)
+        return `- ${i.name}${i.brand ? ` (${i.brand})` : ''}: ${i.proteinPerBasis} g protein, ${i.kcalPerBasis} kcal per ${fmtQty(i.basisQty, i.unit)}; usual ${fmtQty(i.defaultQty, i.unit)} = ${round1(m.protein)} g protein, ${Math.round(m.kcal)} kcal`
+      })
+      .join('\n')
+    return `Daily goals: ${state.goals.proteinTarget} g protein, max ${state.goals.kcalLimit} kcal.
+Eaten so far today: ${round1(summary.protein)} g protein, ${Math.round(summary.kcal)} kcal.
+The user's items:
+${items}`
+  }
+
+  const ask = async (text: string, image?: string) => {
+    const userMsg: ChatMessage = { id: newId(), role: 'user', text, image }
+    const history = [...chat, userMsg]
+    setChat(history)
+    setAsking(true)
+    try {
+      const { reply, foods } = await askNutrition(history, ai, aiContext())
+      setChat((c) => [...c, { id: newId(), role: 'assistant', text: reply, foods }])
+    } catch (err) {
+      setChat((c) => [...c, { id: newId(), role: 'assistant', text: (err as Error).message, error: true }])
+    } finally {
+      setAsking(false)
+    }
+  }
+
+  const foodToItem = (f: FoodSuggestion): Item => {
+    const countable = f.unit === 'piece' || f.unit === 'scoop' || f.unit === 'serving'
+    return {
+      id: '',
+      name: f.name,
+      brand: f.brand ?? undefined,
+      unit: f.unit,
+      basisQty: f.basisQty,
+      proteinPerBasis: f.protein,
+      kcalPerBasis: f.kcal,
+      defaultQty: f.basisQty,
+      step: countable ? (f.unit === 'piece' ? 1 : 0.5) : f.unit === 'ml' ? 25 : 5,
+      fixedMode: 'off',
+      estimated: f.fromLabel ? undefined : true,
+      note: f.fromLabel ? undefined : 'Estimated by AI. Check against the label.',
+    }
+  }
+
   const undo = () => {
     toast?.logIds.forEach(removeLog)
     setToast(null)
@@ -134,6 +187,17 @@ export default function App() {
             onLogFixed={(items) => logItems(items)}
           />
         )}
+        {tab === 'ask' && (
+          <AskView
+            messages={chat}
+            busy={asking}
+            hasKey={ai.apiKey !== ''}
+            onSend={ask}
+            onAddFood={(f) => setNewFood(foodToItem(f))}
+            onClear={() => setChat([])}
+            onOpenSettings={() => setTab('goals')}
+          />
+        )}
         {tab === 'history' && <HistoryView items={state.items} logs={state.logs} goals={state.goals} />}
         {tab === 'items' && (
           <ItemsView items={state.items} onSave={upsertItem} onDelete={removeItem} logLink={logLink} />
@@ -142,6 +206,8 @@ export default function App() {
           <GoalsView
             key={`${state.goals.proteinTarget}-${state.goals.kcalLimit}`}
             state={state}
+            ai={ai}
+            onSaveAi={setAi}
             onSaveGoals={setGoals}
             onImport={replaceState}
             onReset={() => replaceState({ ...SEED_STATE, autoLoggedDays: [today] })}
@@ -185,6 +251,20 @@ export default function App() {
               logItems([sheet.item], [qty])
             }
             setSheet(null)
+          }}
+        />
+      )}
+
+      {newFood && (
+        <ItemEditor
+          initial={newFood}
+          existingIds={state.items.map((i) => i.id)}
+          logLink={logLink}
+          onClose={() => setNewFood(null)}
+          onSave={(item) => {
+            upsertItem(item)
+            setNewFood(null)
+            showToast(`Added ${item.name} to your items`)
           }}
         />
       )}

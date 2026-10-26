@@ -60,7 +60,7 @@ function NumField({
   )
 }
 
-function ItemEditor({
+export function ItemEditor({
   initial,
   existingIds,
   onSave,
