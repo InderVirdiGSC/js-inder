@@ -1,32 +1,30 @@
-# React + TypeScript + Vite
+# Plan Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A one-tap logger for a fixed diet plan. Each item stores its nutrition label once;
+logging uses the item's default amount unless you change it, and protein/calories
+are calculated from the label.
 
-Currently, two official plugins are available:
+## Develop
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Install on iPhone
+
+1. Open the deployed URL in Safari.
+2. Share → **Add to Home Screen**.
+
+Data is stored on the device only (Goals → Export backup to save a copy).
+
+## NFC tags (optional)
+
+Every item has a link like `https://<host>/?log=paneer` (copy it from the Items tab).
+In the Shortcuts app create **Automation → NFC**, scan the tag, add **Open URLs** with
+that link, and turn off **Ask Before Running**. Tapping the tag logs the default amount.
+
+## Deploy
+
+`.github/workflows/deploy-app.yml` publishes `app/` to GitHub Pages on every push to
+`main`. Enable it once under repo **Settings → Pages → Source: GitHub Actions**.

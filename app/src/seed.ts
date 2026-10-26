@@ -85,6 +85,7 @@ export const SEED_ITEMS: Item[] = [
     step: 2,
     fixedMode: 'off',
     note: 'From your notes. Replace with label values.',
+    estimated: true,
   },
   {
     id: 'half-half',
@@ -97,6 +98,7 @@ export const SEED_ITEMS: Item[] = [
     step: 0.5,
     fixedMode: 'off',
     note: 'From your notes; protein is an estimate.',
+    estimated: true,
   },
   {
     id: 'roti',
@@ -109,6 +111,7 @@ export const SEED_ITEMS: Item[] = [
     step: 1,
     fixedMode: 'off',
     note: 'Calories from your notes; protein is an estimate.',
+    estimated: true,
   },
 ]
 

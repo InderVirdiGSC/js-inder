@@ -16,6 +16,8 @@ export interface Item {
   maxQtyPerDay?: number
   fixedMode: FixedMode
   note?: string
+  /** Label values are guesses; cleared once real label values are entered. */
+  estimated?: boolean
 }
 
 export interface LogEntry {

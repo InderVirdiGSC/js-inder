@@ -95,7 +95,19 @@ function ItemEditor({
       id = base
       for (let n = 2; existingIds.includes(id); n++) id = `${base}-${n}`
     }
-    onSave({ ...draft, id, name: draft.name.trim(), brand: draft.brand?.trim() || undefined })
+    const labelChanged =
+      draft.basisQty !== initial.basisQty ||
+      draft.proteinPerBasis !== initial.proteinPerBasis ||
+      draft.kcalPerBasis !== initial.kcalPerBasis
+    const confirmed = draft.estimated && labelChanged
+    onSave({
+      ...draft,
+      id,
+      name: draft.name.trim(),
+      brand: draft.brand?.trim() || undefined,
+      estimated: confirmed ? undefined : draft.estimated,
+      note: confirmed && draft.note === initial.note ? undefined : draft.note,
+    })
   }
 
   const m = macrosFor(draft, draft.defaultQty || 0)
@@ -222,13 +234,13 @@ export function ItemsView({ items, onSave, onDelete, logLink }: Props) {
                   <div className="item-name">
                     {item.name}
                     {item.fixedMode !== 'off' && <span className="badge">fixed</span>}
-                    {item.note && <span className="badge badge-warn">check</span>}
+                    {item.estimated && <span className="badge badge-warn">estimate</span>}
                   </div>
                   <div className="muted small">
                     {item.brand ? `${item.brand} · ` : ''}label: {item.proteinPerBasis} g P, {item.kcalPerBasis} cal per{' '}
                     {fmtQty(item.basisQty, item.unit)}
                   </div>
-                  {item.note && <div className="warn small">{item.note}</div>}
+                  {item.note && <div className={`small ${item.estimated ? 'warn' : 'muted'}`}>{item.note}</div>}
                 </div>
                 <div className="item-default">
                   {fmtQty(item.defaultQty, item.unit)}

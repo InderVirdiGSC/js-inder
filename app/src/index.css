@@ -488,11 +488,11 @@ p {
 /* Toast */
 .toast {
   position: fixed;
-  left: 50%;
+  left: 16px;
+  right: 16px;
   bottom: calc(80px + var(--safe-bottom));
-  transform: translateX(-50%);
-  width: calc(100% - 32px);
   max-width: 528px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -505,9 +505,14 @@ p {
 }
 .toast span {
   flex: 1;
+  min-width: 0;
   font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .toast button {
+  flex-shrink: 0;
   padding: 8px 10px;
   color: var(--accent);
   font-weight: 600;
